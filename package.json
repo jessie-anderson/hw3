@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node_modules/.bin/webpack-dev-server --inline --hot",
     "build": "WEBPACK_ENV=production node_modules/.bin/webpack --optimize-minimize --progress --color",
-    "deploy": "npm run build; surge -p . -d tim-js-starter.surge.sh"
+    "deploy": "npm run build; surge -p . -d jessie-anderson-hw3.surge.sh"
   },
   "repository": {
     "type": "git",
@@ -47,6 +47,8 @@
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-draggable": "^2.1.2",
+    "react-fontawesome": "^1.1.0",
+    "react-icons": "^2.2.1",
     "react-router": "^2.5.2"
   }
 }

@@ -4,3 +4,36 @@ body {
   background: darken(white, 10%);
   margin: 50px;
 }
+
+#note {
+  border-color: rgb(150,150,150);
+  border-style:solid;
+  border-width: thin;
+  background-color: white;
+  margin: 50px;
+  #title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    ul {
+      align-self: flex-start;
+      list-style:none;
+      h1 {
+        margin: 0px;
+        font-size:1.25em;
+      }
+      li {
+        float:left;
+      }
+    }
+    #arrows {
+      float: right;
+    }
+  }
+
+  #body {
+    p {
+      font-size:0.85em;
+    }
+  }
+}
