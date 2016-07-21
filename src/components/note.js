@@ -27,16 +27,17 @@ const Note = (props) => {
   } else {
     editIcon = <FaPencil />;
     bodyArea = (
-      <div id="body" dangerouslySetInnerHTML={{ __html: marked(body || '') }} />
+      <div dangerouslySetInnerHTML={{ __html: marked(body || '') }} />
     );
   }
   return (
     <Draggable
       handle="#arrows"
       axis="both"
-      onStart={props.onStartDrag}
+      onStart={() => { props.onStartDrag(props.id); }}
       onDrag={(e, ui) => { props.onDrag(e, ui, props.id); }}
       onStop={props.onStopDrag}
+      zIndex={props.note.zIndex}
     >
       <div id="note">
         <div id="title">
@@ -47,7 +48,7 @@ const Note = (props) => {
           </ul>
           <div id="arrows"><FaArrows /></div>
         </div>
-        <div>{bodyArea}</div>
+        <div id="body">{bodyArea}</div>
       </div>
     </Draggable>
   );

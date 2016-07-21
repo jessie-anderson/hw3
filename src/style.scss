@@ -1,3 +1,8 @@
+$notewidth: 200px;
+$noteheight: 200px;
+$notepadding: 5px;
+$textboxsize: 180px;
+
 body {
   font-family: "Roboto", sans-serif;
   color: rgb(10%, 10%, 10%);
@@ -10,30 +15,41 @@ body {
   border-style:solid;
   border-width: thin;
   background-color: white;
-  margin: 50px;
+  max-width: $notewidth;
+  min-height:$noteheight;
   #title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     ul {
-      align-self: flex-start;
       list-style:none;
-      h1 {
-        margin: 0px;
-        font-size:1.25em;
-      }
+      padding:$notepadding;
+      margin:0px;
       li {
         float:left;
       }
     }
     #arrows {
       float: right;
+      padding: $notepadding;
     }
+
   }
 
   #body {
-    p {
-      font-size:0.85em;
+    padding:$notepadding;
+    word-wrap: break-word;
+    textarea {
+      width:$textboxsize;
     }
   }
+}
+
+input[type=text] {
+  padding: $notepadding $notepadding;
+  border-radius: $notepadding;
+}
+
+input[type=submit] {
+  padding: $notepadding;
 }

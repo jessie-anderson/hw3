@@ -28,16 +28,7 @@ class App extends Component {
 
   // what to do when user clicks to drag note
   onStartDrag(id) {
-    const clickedIndex = this.state.notes.get(id).zIndex;
-    this.setState({
-      notes: this.state.notes.entrySeq().map(([curId, note]) => {
-        if (note.zIndex < clickedIndex) {
-          return Object.assign({}, note, { zIndex: note.zIndex + 1 });
-        } else if (id === curId) {
-          return Object.assign({}, note, { zIndex: 0 });
-        } else return note;
-      }),
-    });
+    return;
   }
 
   // what to do when user releases mouse from dragging note
@@ -51,6 +42,12 @@ class App extends Component {
       notes: this.state.notes.update(id, (n) => {
         return Object.assign({}, n, { x: ui.x }, { y: ui.y });
       }),
+    });
+  }
+
+  onMouseDown(e, id) {
+    this.state.notes.entrySeq().map(([id, note]) => {
+      if
     });
   }
 
