@@ -16,6 +16,7 @@ class App extends Component {
     this.onStartDrag = this.onStartDrag.bind(this);
     this.onStopDrag = this.onStopDrag.bind(this);
     this.onDrag = this.onDrag.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
     // state
     this.state = {
       notes: Immutable.Map(),
@@ -26,18 +27,31 @@ class App extends Component {
     };
   }
 
+  onMouseDown(e, id) {
+    const pressedIndex = this.state.notes.get(id).zIndex;
+    console.log(pressedIndex);
+    this.state.notes.entrySeq().map(([curId, note]) => {
+      console.log('iterating');
+      if (note.zIndex <= pressedIndex) {
+        this.setState({
+          notes: this.state.notes.set(curId,
+          Object.assign({}, note, { zIndex: note.zIndex + 1 })),
+        });
+      } else if (id === curId) {
+        this.setState({
+          notes: this.state.notes.set(curId,
+          Object.assign({}, note, { zIndex: 0 })),
+        });
+      }
+      console.log(this.state.notes.get(curId).title);
+      console.log(this.state.notes.get(curId).zIndex);
+      return null;
+    });
+  }
+
   // what to do when user clicks to drag note
   onStartDrag(id) {
-    const clickedIndex = this.state.notes.get(id).zIndex;
-    this.setState({
-      notes: this.state.notes.entrySeq().map(([curId, note]) => {
-        if (note.zIndex < clickedIndex) {
-          return Object.assign({}, note, { zIndex: note.zIndex + 1 });
-        } else if (id === curId) {
-          return Object.assign({}, note, { zIndex: 0 });
-        } else return note;
-      }),
-    });
+    return;
   }
 
   // what to do when user releases mouse from dragging note
@@ -107,10 +121,13 @@ class App extends Component {
 
   onNotebarSubmit(event) {
     event.preventDefault();
+    console.log(this.state.notes.entrySeq());
     this.state.notes.entrySeq().map(([id, note]) => {
+      console.log('updating z values');
       this.setState({
         notes: this.state.notes.set(id, Object.assign({}, note, { zIndex: note.zIndex + 1 })),
       });
+      console.log(this.state.notes.get(id).zIndex);
       return null;
     });
     this.setState({
@@ -133,6 +150,7 @@ class App extends Component {
           onStartDrag={this.onStartDrag}
           onStopDrag={this.onStopDrag}
           onDrag={this.onDrag}
+          onMouseDown={this.onMouseDown}
         />
       );
     });

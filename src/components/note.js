@@ -38,6 +38,7 @@ const Note = (props) => {
       onDrag={(e, ui) => { props.onDrag(e, ui, props.id); }}
       onStop={props.onStopDrag}
       zIndex={props.note.zIndex}
+      onMouseDown={(e) => { props.onMouseDown(e, props.id); }}
     >
       <div id="note">
         <div id="title">
