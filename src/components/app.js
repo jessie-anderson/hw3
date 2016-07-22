@@ -26,19 +26,21 @@ class App extends Component {
       // currentNote is the note that is currently being
       // created in notebar
       currentNote: undefined,
+      highestIndex: 0,
     };
   }
 
+  // when user clicks any note, it will come to the front
   onMouseDown(e, id) {
     const pressedIndex = this.state.notes.get(id).zIndex;
     let newNotes = Immutable.Map();
     this.state.notes.forEach((note, curId) => {
-      if ((note.zIndex <= pressedIndex) && (curId !== id)) {
+      if ((note.zIndex >= pressedIndex) && (curId !== id)) {
         newNotes = newNotes.set(curId,
-          Object.assign({}, note, { zIndex: note.zIndex + 1 }));
+          Object.assign({}, note, { zIndex: note.zIndex - 1 }));
       } else if (id === curId) {
         newNotes = newNotes.set(curId,
-          Object.assign({}, note, { zIndex: 0 }));
+          Object.assign({}, note, { zIndex: this.state.highestIndex }));
       } else {
         newNotes = newNotes.set(curId, note);
       }
@@ -95,8 +97,6 @@ class App extends Component {
 
   // when user inputs something into notebar
   onNotebarInput(event) {
-    const defaultX = 20;
-    const defaultY = 20;
     // change state to reflect that new note is being created
     if (this.state.currentNote === undefined) {
       this.setState({
@@ -104,11 +104,12 @@ class App extends Component {
         currentNote: {
           title: event.target.value,
           body: '',
-          x: defaultX,
-          y: defaultY,
+          x: 20,
+          y: 20,
           isEditing: false,
-          zIndex: 0,
+          zIndex: this.state.highestIndex + 1,
         },
+        highestIndex: this.state.highestIndex + 1,
       });
     } else {
       this.setState({
@@ -120,19 +121,16 @@ class App extends Component {
 
   onNotebarSubmit(event) {
     event.preventDefault();
-    let newNotes = Immutable.Map();
-    this.state.notes.forEach((note, id) => {
-      newNotes = newNotes.set(id,
-      Object.assign({}, note, { zIndex: note.zIndex + 1 }));
-    });
-    newNotes = newNotes.set(this.state.currentNote.title, this.state.currentNote);
+    // if user has put nothing into notebar to make new note, do nothing
+    if (this.state.currentNote === undefined) return;
     this.setState({
-      notes: newNotes,
+      notes: this.state.notes.set(this.state.highestIndex, this.state.currentNote),
       currentNote: undefined,
       notebarInput: '',
     });
   }
 
+  // delete all notes
   onDeleteButtonClick() {
     this.setState({
       notes: Immutable.Map(),
@@ -165,7 +163,9 @@ class App extends Component {
             onNotebarInput={this.onNotebarInput}
             notebarInput={this.state.notebarInput}
           />
-          <DeleteButton onDeleteButtonClick={this.onDeleteButtonClick} />
+          <div id="delete-button">
+            <DeleteButton onDeleteButtonClick={this.onDeleteButtonClick} />
+          </div>
         </div>
         {notes}
       </div>
