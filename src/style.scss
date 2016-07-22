@@ -1,6 +1,7 @@
 $notewidth: 200px;
 $noteheight: 200px;
 $notepadding: 5px;
+$bodypadding: $notepadding*2;
 $textboxsize: 180px;
 
 body {
@@ -11,13 +12,16 @@ body {
 }
 
 #note {
+  resize: both;
+  overflow: auto;
   border-color: rgb(150,150,150);
   border-style:solid;
   border-width: thin;
   background-color: white;
-  max-width: $notewidth;
-  min-height:$noteheight;
+  width: $notewidth;
+  height:$noteheight;
   #title {
+    width: inherit;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -37,16 +41,14 @@ body {
   }
 
   #body {
-    padding:$notepadding;
-    word-wrap: break-word;
-    textarea {
-      width:$textboxsize;
-    }
+    overflow: auto;
+    width: inherit;
+    padding:$bodypadding;
   }
 }
 
 input[type=text] {
-  padding: $notepadding $notepadding;
+  padding: $notepadding;
   border-radius: $notepadding;
 }
 

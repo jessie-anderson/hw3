@@ -3,6 +3,8 @@ import React from 'react';
 import Draggable from 'react-draggable';
 // markdown from https://github.com/chjj/marked
 import marked from 'marked';
+// expandable textarea from http://cs52.me/assignments/hw3p1/
+import Textarea from 'react-textarea-autosize';
 // react-compatible Font Awesome from https://gorangajic.github.io/react-icons/
 import FaArrows from 'react-icons/lib/fa/arrows';
 import FaPencil from 'react-icons/lib/fa/pencil';
@@ -19,7 +21,7 @@ const Note = (props) => {
   if (props.note.isEditing) {
     editIcon = <FaCheck />;
     bodyArea = (
-      <textarea
+      <Textarea
         value={body}
         onChange={(event) => { props.onBodyChange(event, props.id); }}
       />

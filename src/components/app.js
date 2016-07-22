@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Immutable from 'immutable';
 import Note from './note';
 import NoteBar from './notebar';
+import DeleteButton from './deletebutton';
 
 // top-level app (smart component, contains state for entire app)
 class App extends Component {
@@ -17,6 +18,7 @@ class App extends Component {
     this.onStopDrag = this.onStopDrag.bind(this);
     this.onDrag = this.onDrag.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.onDeleteButtonClick = this.onDeleteButtonClick.bind(this);
     // state
     this.state = {
       notes: Immutable.Map(),
@@ -137,6 +139,12 @@ class App extends Component {
     });
   }
 
+  onDeleteButtonClick() {
+    this.setState({
+      notes: Immutable.Map(),
+    });
+  }
+
   render() {
     const notes = this.state.notes.entrySeq().map(([id, note]) => {
       return (
@@ -161,6 +169,7 @@ class App extends Component {
           onNotebarInput={this.onNotebarInput}
           notebarInput={this.state.notebarInput}
         />
+        <DeleteButton onDeleteButtonClick={this.onDeleteButtonClick} />
         {notes}
       </div>
     );
