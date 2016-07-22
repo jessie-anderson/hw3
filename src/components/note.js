@@ -32,14 +32,22 @@ const Note = (props) => {
       <div dangerouslySetInnerHTML={{ __html: marked(body || '') }} />
     );
   }
+  /*
+  const style = {
+    draggableStyle: {
+      zIndex: props.note.zIndex,
+    },
+  };
+  */
   return (
     <Draggable
+      id="draggable"
+      zIndex={props.note.zIndex}
       handle="#arrows"
       axis="both"
       onStart={() => { props.onStartDrag(props.id); }}
       onDrag={(e, ui) => { props.onDrag(e, ui, props.id); }}
       onStop={props.onStopDrag}
-      zIndex={props.note.zIndex}
       onMouseDown={(e) => { props.onMouseDown(e, props.id); }}
     >
       <div id="note">
@@ -52,6 +60,7 @@ const Note = (props) => {
           <div id="arrows"><FaArrows /></div>
         </div>
         <div id="body">{bodyArea}</div>
+        <div>zIndex: {props.note.zIndex}</div>
       </div>
     </Draggable>
   );

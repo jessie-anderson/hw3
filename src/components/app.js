@@ -31,23 +31,20 @@ class App extends Component {
 
   onMouseDown(e, id) {
     const pressedIndex = this.state.notes.get(id).zIndex;
-    console.log(pressedIndex);
-    this.state.notes.entrySeq().map(([curId, note]) => {
-      console.log('iterating');
-      if (note.zIndex <= pressedIndex) {
-        this.setState({
-          notes: this.state.notes.set(curId,
-          Object.assign({}, note, { zIndex: note.zIndex + 1 })),
-        });
+    let newNotes = Immutable.Map();
+    this.state.notes.forEach((note, curId) => {
+      if ((note.zIndex <= pressedIndex) && (curId !== id)) {
+        newNotes = newNotes.set(curId,
+          Object.assign({}, note, { zIndex: note.zIndex + 1 }));
       } else if (id === curId) {
-        this.setState({
-          notes: this.state.notes.set(curId,
-          Object.assign({}, note, { zIndex: 0 })),
-        });
+        newNotes = newNotes.set(curId,
+          Object.assign({}, note, { zIndex: 0 }));
+      } else {
+        newNotes = newNotes.set(curId, note);
       }
-      console.log(this.state.notes.get(curId).title);
-      console.log(this.state.notes.get(curId).zIndex);
-      return null;
+    });
+    this.setState({
+      notes: newNotes,
     });
   }
 
@@ -123,17 +120,14 @@ class App extends Component {
 
   onNotebarSubmit(event) {
     event.preventDefault();
-    console.log(this.state.notes.entrySeq());
-    this.state.notes.entrySeq().map(([id, note]) => {
-      console.log('updating z values');
-      this.setState({
-        notes: this.state.notes.set(id, Object.assign({}, note, { zIndex: note.zIndex + 1 })),
-      });
-      console.log(this.state.notes.get(id).zIndex);
-      return null;
+    let newNotes = Immutable.Map();
+    this.state.notes.forEach((note, id) => {
+      newNotes = newNotes.set(id,
+      Object.assign({}, note, { zIndex: note.zIndex + 1 }));
     });
+    newNotes = newNotes.set(this.state.currentNote.title, this.state.currentNote);
     this.setState({
-      notes: this.state.notes.set(this.state.currentNote.title, this.state.currentNote),
+      notes: newNotes,
       currentNote: undefined,
       notebarInput: '',
     });
@@ -164,12 +158,15 @@ class App extends Component {
     });
     return (
       <div>
-        <NoteBar
-          onNotebarSubmit={this.onNotebarSubmit}
-          onNotebarInput={this.onNotebarInput}
-          notebarInput={this.state.notebarInput}
-        />
-        <DeleteButton onDeleteButtonClick={this.onDeleteButtonClick} />
+        <div id="controls">
+          <NoteBar
+            id="note-bar"
+            onNotebarSubmit={this.onNotebarSubmit}
+            onNotebarInput={this.onNotebarInput}
+            notebarInput={this.state.notebarInput}
+          />
+          <DeleteButton onDeleteButtonClick={this.onDeleteButtonClick} />
+        </div>
         {notes}
       </div>
     );

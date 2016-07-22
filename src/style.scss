@@ -11,6 +11,10 @@ body {
   margin: 50px;
 }
 
+#draggable {
+  position: absolute;
+}
+
 #note {
   resize: both;
   overflow: auto;
@@ -47,11 +51,29 @@ body {
   }
 }
 
-input[type=text] {
-  padding: $notepadding;
-  border-radius: $notepadding;
-}
+#controls {
+  display: flex;
+  justify-content: center;
+  font-size: 2em;
+  #note-bar {
+    align-self: flex-start;
+  }
 
-input[type=submit] {
-  padding: $notepadding;
+  input[type=text] {
+    padding: $notepadding;
+    border-radius: $notepadding;
+    border: none;
+  }
+
+  input[type=submit] {
+    padding: $notepadding;
+  }
+
+  button {
+    padding: $notepadding;
+    border-radius: $notepadding;
+    align-self: flex-end;
+    border: none;
+    background-color: red;
+  }
 }
