@@ -42,6 +42,7 @@ const Note = (props) => {
       onDrag={(e, ui) => { props.onDrag(e, ui, props.id); }}
       onStop={props.onStopDrag}
       onMouseDown={(e) => { props.onMouseDown(e, props.id); }}
+      defaultPosition={{ x: props.note.x, y: props.note.y }}
     >
       <div id="note" style={{ zIndex: props.note.zIndex }}>
         <div id="title">

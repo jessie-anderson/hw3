@@ -27,6 +27,8 @@ class App extends Component {
       // created in notebar
       currentNote: undefined,
       highestIndex: 0,
+      defaultX: 20,
+      defaultY: 20,
     };
   }
 
@@ -104,12 +106,16 @@ class App extends Component {
         currentNote: {
           title: event.target.value,
           body: '',
-          x: 20,
-          y: 20,
+          x: this.state.defaultX,
+          y: this.state.defaultY,
           isEditing: false,
           zIndex: this.state.highestIndex + 1,
         },
         highestIndex: this.state.highestIndex + 1,
+
+        // Next note created will be slightly offset from the previous one
+        defaultX: this.state.defaultX + 5,
+        defaultY: this.state.defaultY + 5,
       });
     } else {
       this.setState({
