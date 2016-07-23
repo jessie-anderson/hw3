@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Immutable from 'immutable';
 import Note from './note';
-import NoteBar from './notebar';
+import SmartNotebar from './smartNotebar';
 import DeleteButton from './deletebutton';
 
 // top-level app (smart component, contains state for entire app)
@@ -12,7 +12,6 @@ class App extends Component {
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.onEditClick = this.onEditClick.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
-    this.onNotebarInput = this.onNotebarInput.bind(this);
     this.onNotebarSubmit = this.onNotebarSubmit.bind(this);
     this.onStartDrag = this.onStartDrag.bind(this);
     this.onStopDrag = this.onStopDrag.bind(this);
@@ -22,10 +21,6 @@ class App extends Component {
     // state
     this.state = {
       notes: Immutable.Map(),
-      notebarInput: '',
-      // currentNote is the note that is currently being
-      // created in notebar
-      currentNote: undefined,
       highestIndex: 0,
       defaultX: 20,
       defaultY: 20,
@@ -97,42 +92,21 @@ class App extends Component {
     });
   }
 
-  // when user inputs something into notebar
-  onNotebarInput(event) {
-    // change state to reflect that new note is being created
-    if (this.state.currentNote === undefined) {
-      this.setState({
-        notebarInput: event.target.value,
-        currentNote: {
-          title: event.target.value,
-          body: '',
-          x: this.state.defaultX,
-          y: this.state.defaultY,
-          isEditing: false,
-          zIndex: this.state.highestIndex + 1,
-        },
-        highestIndex: this.state.highestIndex + 1,
-
-        // Next note created will be slightly offset from the previous one
-        defaultX: this.state.defaultX + 5,
-        defaultY: this.state.defaultY + 5,
-      });
-    } else {
-      this.setState({
-        notebarInput: event.target.value,
-        currentNote: Object.assign({}, this.state.currentNote, { title: event.target.value }),
-      });
-    }
-  }
-
-  onNotebarSubmit(event) {
+  onNotebarSubmit(event, newTitle) {
     event.preventDefault();
-    // if user has put nothing into notebar to make new note, do nothing
-    if (this.state.currentNote === undefined) return;
+    const newNote = {
+      title: newTitle,
+      body: '',
+      x: this.state.defaultX,
+      y: this.state.defaultY,
+      isEditing: false,
+      zIndex: this.state.highestIndex,
+    };
     this.setState({
-      notes: this.state.notes.set(this.state.highestIndex, this.state.currentNote),
-      currentNote: undefined,
-      notebarInput: '',
+      notes: this.state.notes.set(this.state.highestIndex, newNote),
+      defaultX: this.state.defaultX + 5,
+      defaultY: this.state.defaultY + 5,
+      highestIndex: this.state.highestIndex + 1,
     });
   }
 
@@ -163,11 +137,9 @@ class App extends Component {
     return (
       <div>
         <div id="controls">
-          <NoteBar
+          <SmartNotebar
             id="note-bar"
             onNotebarSubmit={this.onNotebarSubmit}
-            onNotebarInput={this.onNotebarInput}
-            notebarInput={this.state.notebarInput}
           />
           <div id="delete-button">
             <DeleteButton onDeleteButtonClick={this.onDeleteButtonClick} />

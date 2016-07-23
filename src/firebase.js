@@ -11,3 +11,11 @@ Firebase.initializeApp(config);
 
 // Get a reference to the database service
 const database = Firebase.database();
+
+function updateInfo(app) {
+  database.ref('notes').on('value', (snapshot) => {
+    app.setState({
+      notes: snapshot.val().notes,
+    });
+  });
+}
