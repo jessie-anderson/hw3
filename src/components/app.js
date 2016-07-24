@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import Note from './note';
 import SmartNotebar from './smartNotebar';
 import DeleteButton from './deletebutton';
+import * as Firebase from '../firebase';
 
 // top-level app (smart component, contains state for entire app)
 class App extends Component {
@@ -27,24 +28,36 @@ class App extends Component {
     };
   }
 
+  // subscribe to any changes in info in Firebase
+  componentDidMount() {
+    Firebase.updateInfo('notes', (snapshot) => {
+      this.setState({
+        notes: Immutable.Map(snapshot.val()),
+      });
+    });
+    Firebase.updateInfo('defaultX', (snapshot) => {
+      this.setState({
+        defaultX: snapshot.val(),
+      });
+    });
+    Firebase.updateInfo('defaultY', (snapshot) => {
+      this.setState({
+        defaultY: snapshot.val(),
+      });
+    });
+    Firebase.updateInfo('highestIndex', (snapshot) => {
+      this.setState({
+        highestIndex: snapshot.val(),
+      });
+    });
+  }
+
   // when user clicks any note, it will come to the front
   onMouseDown(e, id) {
+    const notes = this.state.notes;
+    const highestIndex = this.state.highestIndex;
     const pressedIndex = this.state.notes.get(id).zIndex;
-    let newNotes = Immutable.Map();
-    this.state.notes.forEach((note, curId) => {
-      if ((note.zIndex >= pressedIndex) && (curId !== id)) {
-        newNotes = newNotes.set(curId,
-          Object.assign({}, note, { zIndex: note.zIndex - 1 }));
-      } else if (id === curId) {
-        newNotes = newNotes.set(curId,
-          Object.assign({}, note, { zIndex: this.state.highestIndex }));
-      } else {
-        newNotes = newNotes.set(curId, note);
-      }
-    });
-    this.setState({
-      notes: newNotes,
-    });
+    Firebase.updateZIndices(notes, highestIndex, pressedIndex, id);
   }
 
   // what to do when user clicks to drag note
@@ -59,37 +72,24 @@ class App extends Component {
 
   // what to do while user is dragging mouse
   onDrag(e, ui, id) {
-    this.setState({
-      notes: this.state.notes.update(id, (n) => {
-        return Object.assign({}, n, { x: ui.x }, { y: ui.y });
-      }),
-    });
+    Firebase.updatePosition(id, ui.x, ui.y);
   }
 
   // when user clicks delete button on note
   onDeleteClick(id) {
-    this.setState({
-      notes: this.state.notes.delete(id),
-    });
+    Firebase.deleteNote(id);
   }
 
 
   // when user clicks edit button on note
   onEditClick(id) {
-    this.setState({
-      notes: this.state.notes.update(id, (n) => {
-        return Object.assign({}, n, { isEditing: !n.isEditing });
-      }),
-    });
+    const editStatus = this.state.notes.get(id).isEditing;
+    Firebase.changeEditStatus(id, !editStatus);
   }
 
   // when user changes body of note
   onBodyChange(event, id) {
-    this.setState({
-      notes: this.state.notes.update(id, (n) => {
-        return Object.assign({}, n, { body: event.target.value });
-      }),
-    });
+    Firebase.editBody(id, event.target.value);
   }
 
   onNotebarSubmit(event, newTitle) {
@@ -102,19 +102,13 @@ class App extends Component {
       isEditing: false,
       zIndex: this.state.highestIndex,
     };
-    this.setState({
-      notes: this.state.notes.set(this.state.highestIndex, newNote),
-      defaultX: this.state.defaultX + 5,
-      defaultY: this.state.defaultY + 5,
-      highestIndex: this.state.highestIndex + 1,
-    });
+    Firebase.addNote(newNote, this.state.defaultX, this.state.defaultY,
+                      this.state.highestIndex);
   }
 
   // delete all notes
   onDeleteButtonClick() {
-    this.setState({
-      notes: Immutable.Map(),
-    });
+    Firebase.deleteAllNotes();
   }
 
   render() {
