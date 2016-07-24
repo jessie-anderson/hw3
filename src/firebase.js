@@ -37,6 +37,9 @@ export function editBody(id, newBody) {
 
 export function deleteAllNotes() {
   database.ref('notes').set({});
+  database.ref('defaultX').set(20);
+  database.ref('defaultY').set(20);
+  database.ref('highestIndex').set(0);
 }
 
 export function changeEditStatus(id, editStatus) {

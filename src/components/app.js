@@ -93,7 +93,6 @@ class App extends Component {
   }
 
   onNotebarSubmit(event, newTitle) {
-    event.preventDefault();
     const newNote = {
       title: newTitle,
       body: '',
